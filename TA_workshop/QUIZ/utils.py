@@ -8,7 +8,49 @@ def load_data(filename):
     return X, y
 
 def sig(z):
- 
+
+    def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, num_iters, lambda_):
+    """
+    Performs gradient descent to learn w and b.
+    Args:
+      X : (ndarray Shape (m,n))   data, m examples by n features
+      y : (ndarray Shape (m,))    target value 
+      w_in : (ndarray Shape (n,)) initial values of parameters of the model
+      b_in : (scalar)             initial value of parameter of the model
+      cost_function :             function to compute cost
+      gradient_function :         function to compute gradient
+      alpha : (float)             learning rate
+      num_iters : (int)           number of iterations
+      lambda_ : (float)           regularization parameter
+    Returns:
+      w : (ndarray Shape (n,))    updated values of parameters
+      b : (scalar)                updated value of parameter
+      J_history : (list)          history of cost values
+    """
+    m = X.shape[0]
+    J_history = []
+    w = w_in.copy()
+    b = b_in
+    
+    for i in range(num_iters):
+        # Compute gradient
+        dj_db, dj_dw = gradient_function(X, y, w, b, lambda_)
+        
+        # Update parameters
+        w = w - alpha * dj_dw
+        b = b - alpha * dj_db
+        
+        # Compute cost
+        if i < 100000:  # Prevent resource exhaustion
+            cost = cost_function(X, y, w, b, lambda_)
+            J_history.append(cost)
+        
+        # Print cost every 1000 iterations
+        if i % 1000 == 0:
+            print(f"Iteration {i:4}: Cost {J_history[-1]:8.2f}")
+    
+    return w, b, J_history, None  
+    
     return 1/(1+np.exp(-z))
 
 def map_feature(X1, X2):
